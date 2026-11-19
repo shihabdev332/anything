@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaCloudUploadAlt, FaMagic, FaSave } from "react-icons/fa";
+import { FaCloudUploadAlt, FaMagic, FaSave, FaTrashAlt } from "react-icons/fa";
 import Title from "../component/Title";
 import Input, { Label } from "../component/ui/Input";
 import { TiPlus } from "react-icons/ti";
@@ -9,6 +9,7 @@ import { serverUrl } from "../../../config";
 import { getSellerToken } from "../session";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { addCategorySuggestions, productCategories, rowsToSpecifications, toSpecificationRows } from "../../constant/productSpecifications";
 
 const Add = ({ token }) => {
   const [loading, setLoading] = useState(false);
@@ -17,14 +18,6 @@ const Add = ({ token }) => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("product");
   const sellerToken = token || getSellerToken();
-
-  // ✅ List of 20 Categories
-  const categoriesList = [
-    "Smartphones", "Laptops", "Tablets", "Monitors", "Processors",
-    "RAM", "Motherboards", "Graphics Cards", "SSD & HDD", "Power Supply",
-    "Casing", "Airbuds", "Over-Ear Headphones", "Smart Watches", "Keyboards",
-    "Mouse", "Speakers", "Cameras", "Gaming Console", "Lights & Studio"
-  ];
 
   const [formData, setFormData] = useState({
     name: "",
@@ -39,12 +32,12 @@ const Add = ({ token }) => {
     isAvailable: true,
     badge: "",
     tags: [],
-    specifications: "", 
     image1: null,
     image2: null,
     image3: null,
     image4: null,
   });
+  const [specificationRows, setSpecificationRows] = useState([]);
 
   const [previews, setPreviews] = useState({ image1: null, image2: null, image3: null, image4: null });
 
@@ -69,8 +62,8 @@ const Add = ({ token }) => {
               isAvailable: p.isAvailable ?? true,
               badge: p.badge || "",
               tags: p.tags || [],
-              specifications: p.specifications ? JSON.stringify(p.specifications, null, 2) : "",
             }));
+            setSpecificationRows(addCategorySuggestions(toSpecificationRows(p.specifications), p.category || ""));
             
             setPreviews({
               image1: p.images?.[0] || null,
@@ -92,6 +85,11 @@ const Add = ({ token }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    if (name === "category") {
+      setFormData((prev) => ({ ...prev, category: value }));
+      setSpecificationRows((prev) => addCategorySuggestions(prev, value));
+      return;
+    }
     if (name === "stock") {
       const quantity = Number(value);
       setFormData((prev) => ({
@@ -132,8 +130,8 @@ const Add = ({ token }) => {
           tags: ai.tags || prev.tags,
           price: ai.suggestedPrice || prev.price,
           badge: ai.badge || prev.badge,
-          specifications: JSON.stringify(ai.specifications, null, 2), 
         }));
+        setSpecificationRows(addCategorySuggestions(toSpecificationRows(ai.specifications), formData.category));
         toast.success("AI has refilled the details!");
       }
     } catch (error) {
@@ -150,11 +148,10 @@ const Add = ({ token }) => {
     try {
       setLoading(true);
       const data = new FormData();
+      data.append("specifications", JSON.stringify(rowsToSpecifications(specificationRows)));
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "tags") {
           data.append(key, JSON.stringify(value));
-        } else if (key === "specifications") {
-          data.append(key, value);
         } else if (value !== null && !key.startsWith('image')) {
           data.append(key, value);
         }
@@ -217,9 +214,63 @@ const Add = ({ token }) => {
         <textarea rows={4} name="description" value={formData.description} onChange={handleChange} className="border p-3 border-gray-300 rounded-md w-full focus:border-black outline-none transition bg-white" required />
       </div>
 
-      <div className="flex flex-col w-full gap-1">
-        <Label>Technical Specifications (JSON)</Label>
-        <textarea rows={5} name="specifications" value={formData.specifications} onChange={handleChange} className="border p-3 border-gray-300 rounded-md w-full font-mono text-sm bg-gray-50 outline-none focus:border-blue-500" />
+      <div className="flex w-full flex-col gap-1">
+        <Label>Category</Label>
+        <select name="category" value={formData.category} onChange={handleChange} className="w-full rounded-md border bg-white p-2 outline-none transition hover:border-black sm:max-w-sm" required>
+          <option value="">Select Category</option>
+          {productCategories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+      </div>
+
+      <div className="flex flex-col w-full gap-2">
+        <div>
+          <Label>Product Specifications</Label>
+          <p className="mt-1 text-xs text-gray-500">Category suggestions are optional. Edit them or add your own specification and value.</p>
+        </div>
+        <div className="w-full overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="grid grid-cols-[1fr_1fr_2.5rem] gap-3 border-b bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-600 sm:grid-cols-[1fr_1.5fr_3rem] sm:px-4">
+            <span>Specification</span>
+            <span>Value</span>
+            <span className="sr-only">Actions</span>
+          </div>
+          {specificationRows.length > 0 ? specificationRows.map((row, index) => (
+            <div key={`${index}-${row.key}`} className="grid grid-cols-[1fr_1fr_2.5rem] items-center gap-3 border-b border-gray-100 p-3 last:border-b-0 sm:grid-cols-[1fr_1.5fr_3rem] sm:px-4">
+              <input
+                value={row.key}
+                onChange={(event) => setSpecificationRows((previous) => previous.map((item, rowIndex) => rowIndex === index ? { ...item, key: event.target.value } : item))}
+                placeholder="e.g. Battery"
+                aria-label={`Specification name ${index + 1}`}
+                className="min-w-0 rounded-md border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500"
+              />
+              <input
+                value={row.value}
+                onChange={(event) => setSpecificationRows((previous) => previous.map((item, rowIndex) => rowIndex === index ? { ...item, value: event.target.value } : item))}
+                placeholder="e.g. 5000 mAh"
+                aria-label={`Specification value ${index + 1}`}
+                className="min-w-0 rounded-md border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500"
+              />
+              <button
+                type="button"
+                onClick={() => setSpecificationRows((previous) => previous.filter((_, rowIndex) => rowIndex !== index))}
+                aria-label={`Remove specification ${index + 1}`}
+                className="flex h-9 w-9 items-center justify-center rounded-md text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+              >
+                <FaTrashAlt size={13} />
+              </button>
+            </div>
+          )) : (
+            <p className="px-4 py-5 text-sm text-gray-500">Select a category to see suggested specifications, or add your own.</p>
+          )}
+          <div className="border-t border-gray-100 p-3 sm:px-4">
+            <button
+              type="button"
+              onClick={() => setSpecificationRows((previous) => [...previous, { key: "", value: "" }])}
+              className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-black hover:text-black"
+            >
+              <TiPlus /> Add New Specification
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5 w-full">
@@ -243,17 +294,6 @@ const Add = ({ token }) => {
       </div>
 
       <div className="flex flex-wrap gap-4 w-full">
-        {/* ✅ Dynamic Category Selector */}
-        <div className="flex flex-col gap-1 min-w-[200px]">
-          <Label>Category</Label>
-          <select name="category" value={formData.category} onChange={handleChange} className="border p-2 rounded-md outline-none bg-white cursor-pointer hover:border-black transition" required>
-            <option value="">Select Category</option>
-            {categoriesList.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-
         <div className="flex flex-col gap-1 min-w-[150px]">
           <Label>Badge</Label>
           <select name="badge" value={formData.badge} onChange={handleChange} className="border p-2 rounded-md outline-none bg-white cursor-pointer">
