@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /profile
+Disallow: /owner
+Disallow: /seller
+Disallow: /delivery
+Disallow: /cart
+Disallow: /order
+Disallow: /signIn
+Disallow: /signUp
+Disallow: /search
+
+Sitemap: https://digital-store-rj52.vercel.app/sitemap.xml
