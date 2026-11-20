@@ -37,7 +37,9 @@ const Banner = () => {
                 alt={item?.title || "Digital Store featured collection"}
                 className={`w-full h-full object-cover transition-transform duration-[5000ms] ${
                   currentSlide === index ? "scale-110" : "scale-100"
-                }`} loading="lazy"
+                }`}
+                loading="eager"
+                fetchPriority={currentSlide === index ? "high" : "low"}
               />
 
               {/* Premium Gradient Overlay */}

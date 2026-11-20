@@ -39,7 +39,7 @@ const router = createBrowserRouter([
   {
     path: "/owner/*",
     element: (
-      <Suspense fallback={<main className="grid min-h-screen place-items-center bg-[#0B1020] text-sm text-slate-400">Loading owner workspace…</main>}>
+      <Suspense fallback={<main className="grid min-h-screen place-items-center bg-[#F3F4F6] text-sm text-[#111827]">Loading owner workspace…</main>}>
         <OwnerDashboard />
       </Suspense>
     ),

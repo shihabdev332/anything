@@ -144,16 +144,16 @@ const SellersPage = ({ token }) => {
   };
 
   return (
-    <section className="space-y-5 text-[#F8FAFC]">
+    <section className="space-y-5 text-[#111827]">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#9675FF]">Marketplace</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#F8FAFC]">Sellers</h1>
-          <p className="mt-1 text-sm text-[#9AAAC4]">Browse seller accounts registered on the platform.</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#C2410C]">Marketplace</p>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-[#111827]">Sellers</h1>
+          <p className="mt-1 text-sm text-[#4B5563]">Browse seller accounts registered on the platform.</p>
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <label className="relative block w-full sm:w-64">
-            <Search size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAAC4]" />
+            <Search size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" />
             <input
               type="search"
               value={searchText}
@@ -162,13 +162,13 @@ const SellersPage = ({ token }) => {
                 setNotice("");
               }}
               placeholder="Search name or email"
-              className="w-full rounded-xl border border-[#243451] bg-[#0B1020] py-2.5 pl-10 pr-3 text-sm text-[#F8FAFC] outline-none transition placeholder:text-[#9AAAC4] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/10"
+              className="w-full rounded-xl border border-[#FED7AA] bg-[#F3F4F6] py-2.5 pl-10 pr-3 text-sm text-[#111827] outline-none transition placeholder:text-[#4B5563] focus:border-[#FDBA74] focus:ring-2 focus:ring-[#FDBA74]/10"
             />
           </label>
           <button
             type="button"
             onClick={() => setShowSellerModal(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6D4AFF] px-4 py-2.5 text-sm font-semibold text-[#F8FAFC] transition hover:bg-[#9675FF]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FDBA74] px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#FB923C]"
           >
             <UserPlus size={16} /> Add seller
           </button>
@@ -176,16 +176,16 @@ const SellersPage = ({ token }) => {
       </div>
 
       {notice && (
-        <p role="status" className="rounded-xl border border-[#34D399]/25 bg-[#34D399]/10 px-4 py-3 text-sm text-[#34D399]">{notice}</p>
+        <p role="status" className="rounded-xl border border-[#BBF7D0] bg-[#DCFCE7] px-4 py-3 text-sm text-[#166534]">{notice}</p>
       )}
       {error && (
-        <p role="alert" className="rounded-xl border border-rose-400/20 bg-rose-400/[0.07] px-4 py-3 text-sm text-rose-200">{error}</p>
+        <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">{error}</p>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-[#243451] bg-[#10182B] shadow-[0_14px_45px_rgba(0,0,0,0.12)]">
+      <div className="overflow-hidden rounded-2xl border border-[#FED7AA] bg-[#FFFFFF] shadow-[0_14px_45px_rgba(0,0,0,0.12)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[620px] text-left text-sm">
-            <thead className="border-b border-[#243451] bg-[#243451]/35 text-xs uppercase tracking-wider text-[#9AAAC4]">
+            <thead className="border-b border-[#FED7AA] bg-[#FED7AA]/35 text-xs uppercase tracking-wider text-[#4B5563]">
               <tr>
                 <th className="px-5 py-4 font-semibold">Seller</th>
                 <th className="px-5 py-4 font-semibold">Email</th>
@@ -193,29 +193,29 @@ const SellersPage = ({ token }) => {
                 <th className="px-5 py-4 text-right font-semibold">Permission</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#243451]/70">
+            <tbody className="divide-y divide-[#FED7AA]/70">
               {sellers.map((seller) => (
-                <tr key={seller._id} className="hover:bg-[#243451]/35">
+                <tr key={seller._id} className="hover:bg-[#FED7AA]/35">
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       {seller.avatar ? (
                         <img src={seller.avatar} alt="" className="h-9 w-9 rounded-full object-cover" loading="lazy" />
                       ) : (
-                        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#34D399]/10 text-sm font-bold text-[#34D399]">
+                        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#DCFCE7] text-sm font-bold text-[#166534]">
                           {(seller.name || "S").slice(0, 1).toUpperCase()}
                         </span>
                       )}
-                      <span className="font-semibold text-[#F8FAFC]">{seller.name || "Unnamed seller"}</span>
+                      <span className="font-semibold text-[#111827]">{seller.name || "Unnamed seller"}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-[#9AAAC4]">{seller.email}</td>
-                  <td className="px-5 py-4 font-mono text-xs text-[#9AAAC4]">{seller._id}</td>
+                  <td className="px-5 py-4 text-[#4B5563]">{seller.email}</td>
+                  <td className="px-5 py-4 font-mono text-xs text-[#4B5563]">{seller._id}</td>
                   <td className="px-5 py-4 text-right">
                     <button
                       type="button"
                       onClick={() => revokeAccess(seller)}
                       disabled={changingSellerId === seller._id}
-                      className="rounded-lg border border-rose-400/20 px-3 py-1.5 text-xs font-semibold text-rose-300 transition hover:bg-rose-400/10 disabled:cursor-wait disabled:opacity-60"
+                      className="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:cursor-wait disabled:opacity-60"
                     >
                       {changingSellerId === seller._id ? "Updating…" : "Revoke access"}
                     </button>
@@ -224,25 +224,25 @@ const SellersPage = ({ token }) => {
               ))}
               {!loading && sellers.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="px-5 py-12 text-center text-sm text-[#9AAAC4]">
+                  <td colSpan="4" className="px-5 py-12 text-center text-sm text-[#4B5563]">
                     {search ? "No sellers match this search." : "No seller accounts found."}
                   </td>
                 </tr>
               )}
               {loading && (
-                <tr><td colSpan="4" className="px-5 py-12 text-center text-sm text-[#9AAAC4]">Loading sellers…</td></tr>
+                <tr><td colSpan="4" className="px-5 py-12 text-center text-sm text-[#4B5563]">Loading sellers…</td></tr>
               )}
             </tbody>
           </table>
         </div>
-        <div className="flex flex-col gap-3 border-t border-[#243451]/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-[#9AAAC4]">Showing {sellers.length} seller{sellers.length === 1 ? "" : "s"}</p>
+        <div className="flex flex-col gap-3 border-t border-[#FED7AA]/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-[#4B5563]">Showing {sellers.length} seller{sellers.length === 1 ? "" : "s"}</p>
           {hasMore && (
             <button
               type="button"
               onClick={loadMore}
               disabled={loading || loadingMore}
-              className="rounded-xl bg-[#6D4AFF] px-4 py-2 text-sm font-semibold text-[#F8FAFC] transition hover:bg-[#9675FF] disabled:cursor-wait disabled:opacity-60"
+              className="rounded-xl bg-[#FDBA74] px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#FB923C] disabled:cursor-wait disabled:opacity-60"
             >
               {loadingMore ? "Loading…" : "Load more"}
             </button>
@@ -379,41 +379,41 @@ const SellerAccessModal = ({ token, onClose, onSaved }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#080B18]/80 p-4" role="presentation">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#D1D5DB]/80 p-4" role="presentation">
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="seller-modal-title"
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#243451] bg-[#10182B] p-5 text-[#F8FAFC] shadow-2xl sm:p-7"
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#FED7AA] bg-[#FFFFFF] p-5 text-[#111827] shadow-2xl sm:p-7"
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#9675FF]">Seller permissions</p>
-            <h2 id="seller-modal-title" className="mt-1 text-xl font-bold text-[#F8FAFC]">Add a seller</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#C2410C]">Seller permissions</p>
+            <h2 id="seller-modal-title" className="mt-1 text-xl font-bold text-[#111827]">Add a seller</h2>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close" className="rounded-lg p-2 text-[#9AAAC4] hover:bg-[#243451]/50">
+          <button type="button" onClick={onClose} aria-label="Close" className="rounded-lg p-2 text-[#4B5563] hover:bg-[#FED7AA]/50">
             <X size={19} />
           </button>
         </div>
 
-        <div className="mt-6 flex gap-2 border-b border-[#243451] pb-3">
+        <div className="mt-6 flex gap-2 border-b border-[#FED7AA] pb-3">
           {[{ id: "create", label: "Create seller account" }, { id: "grant", label: "Grant access to customer" }].map(({ id, label }) => (
             <button
               type="button"
               key={id}
               onClick={() => { setMode(id); setError(""); }}
-              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${mode === id ? "bg-[#6D4AFF]/15 text-[#9675FF]" : "text-[#9AAAC4] hover:bg-[#243451]/50"}`}
+              className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${mode === id ? "bg-[#FDBA74]/15 text-[#C2410C]" : "text-[#4B5563] hover:bg-[#FED7AA]/50"}`}
             >
               {label}
             </button>
           ))}
         </div>
 
-        {error && <p role="alert" className="mt-4 rounded-xl border border-rose-400/20 bg-rose-400/[0.07] px-4 py-3 text-sm text-rose-200">{error}</p>}
+        {error && <p role="alert" className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900">{error}</p>}
 
         {mode === "create" ? (
           <form onSubmit={createSeller} className="mt-5 space-y-4">
-            <label className="block space-y-1.5 text-sm font-medium text-[#F8FAFC]">
+            <label className="block space-y-1.5 text-sm font-medium text-[#111827]">
               Seller name
               <input
                 required
@@ -421,10 +421,10 @@ const SellerAccessModal = ({ token, onClose, onSaved }) => {
                 maxLength={80}
                 value={form.name}
                 onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-                className="w-full rounded-xl border border-[#243451] bg-[#0B1020] px-3 py-2.5 text-[#F8FAFC] font-normal outline-none focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/20"
+                className="w-full rounded-xl border border-[#FED7AA] bg-[#F3F4F6] px-3 py-2.5 text-[#111827] font-normal outline-none focus:border-[#FDBA74] focus:ring-2 focus:ring-[#FDBA74]/20"
               />
             </label>
-            <label className="block space-y-1.5 text-sm font-medium text-[#F8FAFC]">
+            <label className="block space-y-1.5 text-sm font-medium text-[#111827]">
               Email
               <input
                 required
@@ -433,10 +433,10 @@ const SellerAccessModal = ({ token, onClose, onSaved }) => {
                 autoComplete="email"
                 value={form.email}
                 onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-                className="w-full rounded-xl border border-[#243451] bg-[#0B1020] px-3 py-2.5 text-[#F8FAFC] font-normal outline-none focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/20"
+                className="w-full rounded-xl border border-[#FED7AA] bg-[#F3F4F6] px-3 py-2.5 text-[#111827] font-normal outline-none focus:border-[#FDBA74] focus:ring-2 focus:ring-[#FDBA74]/20"
               />
             </label>
-            <label className="block space-y-1.5 text-sm font-medium text-[#F8FAFC]">
+            <label className="block space-y-1.5 text-sm font-medium text-[#111827]">
               Initial password
               <input
                 required
@@ -446,13 +446,13 @@ const SellerAccessModal = ({ token, onClose, onSaved }) => {
                 autoComplete="new-password"
                 value={form.password}
                 onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-                className="w-full rounded-xl border border-[#243451] bg-[#0B1020] px-3 py-2.5 text-[#F8FAFC] font-normal outline-none focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/20"
+                className="w-full rounded-xl border border-[#FED7AA] bg-[#F3F4F6] px-3 py-2.5 text-[#111827] font-normal outline-none focus:border-[#FDBA74] focus:ring-2 focus:ring-[#FDBA74]/20"
               />
-              <span className="block text-xs font-normal text-[#9AAAC4]">Share this initial password with the seller securely.</span>
+              <span className="block text-xs font-normal text-[#4B5563]">Share this initial password with the seller securely.</span>
             </label>
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={onClose} className="rounded-xl border border-[#243451] px-4 py-2.5 text-sm font-semibold text-[#9AAAC4] hover:bg-[#243451]/50">Cancel</button>
-              <button type="submit" disabled={submitting} className="rounded-xl bg-[#6D4AFF] px-4 py-2.5 text-sm font-semibold text-[#F8FAFC] hover:bg-[#9675FF] disabled:opacity-60">
+              <button type="button" onClick={onClose} className="rounded-xl border border-[#FED7AA] px-4 py-2.5 text-sm font-semibold text-[#4B5563] hover:bg-[#FED7AA]/50">Cancel</button>
+              <button type="submit" disabled={submitting} className="rounded-xl bg-[#FDBA74] px-4 py-2.5 text-sm font-semibold text-[#111827] hover:bg-[#FB923C] disabled:opacity-60">
                 {submitting ? "Creating…" : "Create seller"}
               </button>
             </div>
@@ -460,40 +460,40 @@ const SellerAccessModal = ({ token, onClose, onSaved }) => {
         ) : (
           <div className="mt-5 space-y-4">
             <label className="relative block">
-              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9AAAC4]" />
+              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" />
               <input
                 type="search"
                 value={customerSearchText}
                 onChange={(event) => setCustomerSearchText(event.target.value.slice(0, 80))}
                 placeholder="Find an existing customer by name or email"
-                className="w-full rounded-xl border border-[#243451] bg-[#0B1020] py-2.5 pl-10 pr-3 text-sm text-[#F8FAFC] outline-none placeholder:text-[#9AAAC4] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/20"
+                className="w-full rounded-xl border border-[#FED7AA] bg-[#F3F4F6] py-2.5 pl-10 pr-3 text-sm text-[#111827] outline-none placeholder:text-[#4B5563] focus:border-[#FDBA74] focus:ring-2 focus:ring-[#FDBA74]/20"
               />
             </label>
-            <div className="divide-y divide-[#243451]/70 rounded-xl border border-[#243451]">
+            <div className="divide-y divide-[#FED7AA]/70 rounded-xl border border-[#FED7AA]">
               {customers.map((customer) => (
                 <div key={customer._id} className="flex items-center justify-between gap-3 px-4 py-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[#F8FAFC]">{customer.name || "Unnamed customer"}</p>
-                    <p className="truncate text-xs text-[#9AAAC4]">{customer.email}</p>
+                    <p className="truncate text-sm font-semibold text-[#111827]">{customer.name || "Unnamed customer"}</p>
+                    <p className="truncate text-xs text-[#4B5563]">{customer.email}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => grantAccess(customer)}
                     disabled={Boolean(grantingId)}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#6D4AFF] px-3 py-2 text-xs font-semibold text-[#F8FAFC] hover:bg-[#9675FF] disabled:opacity-60"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#FDBA74] px-3 py-2 text-xs font-semibold text-[#111827] hover:bg-[#FB923C] disabled:opacity-60"
                   >
                     <ShieldCheck size={14} /> {grantingId === customer._id ? "Updating…" : "Grant access"}
                   </button>
                 </div>
               ))}
-              {loadingCustomers && <p className="px-4 py-8 text-center text-sm text-[#9AAAC4]">Loading customers…</p>}
+              {loadingCustomers && <p className="px-4 py-8 text-center text-sm text-[#4B5563]">Loading customers…</p>}
               {!loadingCustomers && customers.length === 0 && (
-                <p className="px-4 py-8 text-center text-sm text-[#9AAAC4]">No customer accounts found.</p>
+                <p className="px-4 py-8 text-center text-sm text-[#4B5563]">No customer accounts found.</p>
               )}
             </div>
             {hasMore && (
               <div className="text-center">
-                <button type="button" onClick={loadMoreCustomers} disabled={loadingMore} className="rounded-lg px-4 py-2 text-sm font-semibold text-[#9675FF] hover:bg-[#6D4AFF]/15 disabled:opacity-60">
+                <button type="button" onClick={loadMoreCustomers} disabled={loadingMore} className="rounded-lg px-4 py-2 text-sm font-semibold text-[#C2410C] hover:bg-[#FDBA74]/15 disabled:opacity-60">
                   {loadingMore ? "Loading…" : "Load more customers"}
                 </button>
               </div>
@@ -587,23 +587,23 @@ const OwnerDashboard = () => {
 
   if (checkingAccess || !user) {
     return (
-      <main className="grid min-h-screen place-items-center bg-[#080B18] px-4">
+      <main className="grid min-h-screen place-items-center bg-[#D1D5DB] px-4">
         <Seo title="Owner Dashboard | Digital Store" description="Private Digital Store owner workspace." path="/owner" noindex />
         {accessError ? (
-          <section role="alert" className="max-w-md rounded-2xl border border-[#243451] bg-[#10182B] p-6 text-center">
-            <p className="text-lg font-semibold text-[#F8FAFC]">Owner dashboard unavailable</p>
-            <p className="mt-2 text-sm text-[#9AAAC4]">{accessError}</p>
-            <button type="button" onClick={retryAccessCheck} className="mt-5 rounded-xl bg-[#6D4AFF] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#9675FF]">Retry</button>
+          <section role="alert" className="max-w-md rounded-2xl border border-[#FED7AA] bg-[#FFFFFF] p-6 text-center">
+            <p className="text-lg font-semibold text-[#111827]">Owner dashboard unavailable</p>
+            <p className="mt-2 text-sm text-[#4B5563]">{accessError}</p>
+            <button type="button" onClick={retryAccessCheck} className="mt-5 rounded-xl bg-[#FDBA74] px-4 py-2.5 text-sm font-semibold text-[#111827] hover:bg-[#FB923C]">Retry</button>
           </section>
-        ) : <p className="text-sm font-medium text-[#9AAAC4]">Checking owner access…</p>}
+        ) : <p className="text-sm font-medium text-[#4B5563]">Checking owner access…</p>}
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#080B18] text-[#F8FAFC] print:bg-white print:text-[#F8FAFC]">
+    <main className="min-h-screen bg-[#D1D5DB] text-[#111827] print:bg-white print:text-[#111827]">
       <Seo title="Owner Dashboard | Digital Store" description="Private Digital Store owner workspace." path={window.location.pathname} noindex />
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#243451] bg-[#0B1020] px-4 sm:px-6 lg:px-8 print:hidden">
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#FED7AA] bg-[#F3F4F6] px-4 sm:px-6 lg:px-8 print:hidden">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -611,30 +611,30 @@ const OwnerDashboard = () => {
             aria-expanded={mobileMenuOpen}
             aria-controls="owner-navigation"
             onClick={() => setMobileMenuOpen((open) => !open)}
-            className="rounded-lg p-2 text-[#9AAAC4] hover:bg-[#243451]/60 hover:text-[#F8FAFC] lg:hidden"
+            className="rounded-lg p-2 text-[#4B5563] hover:bg-[#FED7AA]/60 hover:text-[#111827] lg:hidden"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
           <Link to="/owner" className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#6D4AFF] text-[#F8FAFC]">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#FDBA74] text-[#111827]">
               <LayoutDashboard size={18} />
             </span>
             <span>
-              <span className="block text-sm font-bold leading-4 text-[#F8FAFC]">Digital Store</span>
-              <span className="block pt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#9675FF]">Owner Center</span>
+              <span className="block text-sm font-bold leading-4 text-[#111827]">Digital Store</span>
+              <span className="block pt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#C2410C]">Owner Center</span>
             </span>
           </Link>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="hidden text-right sm:block">
-            <p className="text-sm font-semibold text-[#F8FAFC]">{user.name}</p>
-            <p className="text-xs text-[#9AAAC4]">Owner</p>
+            <p className="text-sm font-semibold text-[#111827]">{user.name}</p>
+            <p className="text-xs text-[#4B5563]">Owner</p>
           </div>
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex items-center gap-2 rounded-xl border border-[#243451] px-3 py-2 text-sm font-semibold text-[#9AAAC4] transition hover:border-[#243451] hover:bg-[#243451]/50 hover:text-[#F8FAFC]"
+            className="inline-flex items-center gap-2 rounded-xl border border-[#FED7AA] px-3 py-2 text-sm font-semibold text-[#4B5563] transition hover:border-[#FED7AA] hover:bg-[#FED7AA]/50 hover:text-[#111827]"
           >
             <LogOut size={16} /> <span className="hidden sm:inline">Log out</span>
           </button>
@@ -644,12 +644,12 @@ const OwnerDashboard = () => {
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-[1720px]">
         <aside
           id="owner-navigation"
-          className={`${mobileMenuOpen ? "block" : "hidden"} fixed inset-x-0 top-16 z-20 max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-[#243451] bg-[#0B1020] p-4 text-[#F8FAFC] shadow-2xl shadow-slate-950/20 transition-[width] lg:sticky lg:top-16 lg:flex lg:h-[calc(100vh-4rem)] lg:max-h-none lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r lg:border-[#243451] lg:shadow-none ${sidebarCollapsed ? "lg:w-20 lg:px-2" : "lg:w-64 lg:p-5"}`}
+          className={`${mobileMenuOpen ? "block" : "hidden"} fixed inset-x-0 top-16 z-20 max-h-[calc(100vh-4rem)] overflow-y-auto border-b border-[#FED7AA] bg-[#F3F4F6] p-4 text-[#111827] shadow-2xl shadow-slate-950/20 transition-[width] lg:sticky lg:top-16 lg:flex lg:h-[calc(100vh-4rem)] lg:max-h-none lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r lg:border-[#FED7AA] lg:shadow-none ${sidebarCollapsed ? "lg:w-20 lg:px-2" : "lg:w-64 lg:p-5"}`}
         >
           <nav aria-label="Owner dashboard navigation" className="space-y-5">
             {navigationGroups.map(({ label: groupLabel, items }) => (
               <section key={groupLabel}>
-                <p className={`mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9AAAC4] ${sidebarCollapsed ? "lg:hidden" : ""}`}>{groupLabel}</p>
+                <p className={`mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#4B5563] ${sidebarCollapsed ? "lg:hidden" : ""}`}>{groupLabel}</p>
                 <div className="grid grid-cols-2 gap-1.5 lg:grid-cols-1">
                   {items.map(({ label, path, icon: Icon, end }) => (
                     <NavLink
@@ -659,10 +659,10 @@ const OwnerDashboard = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       title={sidebarCollapsed ? label : undefined}
                       className={({ isActive }) =>
-                        `flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9675FF] ${sidebarCollapsed ? "lg:justify-center lg:px-0" : ""} ${
+                        `flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C] ${sidebarCollapsed ? "lg:justify-center lg:px-0" : ""} ${
                           isActive
-                            ? "border-[#9675FF]/35 bg-[#6D4AFF]/20 text-[#F8FAFC] shadow-inner shadow-white/[0.02]"
-                            : "border-transparent text-[#9AAAC4] hover:bg-[#243451]/60 hover:text-[#F8FAFC]"
+                            ? "border-[#C2410C]/35 bg-[#FDBA74]/20 text-[#111827] shadow-inner shadow-white/[0.02]"
+                            : "border-transparent text-[#4B5563] hover:bg-[#FED7AA]/60 hover:text-[#111827]"
                         }`
                       }
                     >
@@ -674,13 +674,13 @@ const OwnerDashboard = () => {
               </section>
             ))}
           </nav>
-          <div className={`mt-8 hidden rounded-2xl border border-[#243451] bg-[#243451]/40 p-4 lg:block ${sidebarCollapsed ? "text-center" : ""}`}>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#F8FAFC]">
-              <ShieldCheck size={15} className="shrink-0 text-emerald-400" /> {!sidebarCollapsed && "Owner account"}
+          <div className={`mt-8 hidden rounded-2xl border border-[#FED7AA] bg-[#FED7AA]/40 p-4 lg:block ${sidebarCollapsed ? "text-center" : ""}`}>
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#111827]">
+              <ShieldCheck size={15} className="shrink-0 text-emerald-700" /> {!sidebarCollapsed && "Owner account"}
             </div>
-            {!sidebarCollapsed && <p className="mt-2 break-all text-xs leading-5 text-[#9AAAC4]">{user.email}</p>}
+            {!sidebarCollapsed && <p className="mt-2 break-all text-xs leading-5 text-[#4B5563]">{user.email}</p>}
           </div>
-          <button type="button" onClick={toggleSidebar} aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} className="mt-auto hidden items-center justify-center gap-2 rounded-xl border border-[#243451] px-3 py-2.5 text-xs font-semibold text-[#9AAAC4] transition hover:bg-[#243451]/50 hover:text-[#F8FAFC] lg:flex">
+          <button type="button" onClick={toggleSidebar} aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"} className="mt-auto hidden items-center justify-center gap-2 rounded-xl border border-[#FED7AA] px-3 py-2.5 text-xs font-semibold text-[#4B5563] transition hover:bg-[#FED7AA]/50 hover:text-[#111827] lg:flex">
             {sidebarCollapsed ? <PanelLeftOpen size={16} /> : <><PanelLeftClose size={16} /> Collapse menu</>}
           </button>
         </aside>
