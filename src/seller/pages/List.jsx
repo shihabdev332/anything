@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { serverUrl } from "../../../config";
@@ -15,7 +15,7 @@ const List = ({ token }) => {
   const [loading, setLoading] = useState(false);
 
   // English Comment: Fetch all products from the database
-  const fetchProductList = async () => {
+  const fetchProductList = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${serverUrl}/api/product/mine`, {
@@ -31,7 +31,7 @@ const List = ({ token }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   // English Comment: Delete product logic with Confirmation
   const handleRemoveProduct = async (item) => {
@@ -58,7 +58,7 @@ const List = ({ token }) => {
 
   useEffect(() => {
     fetchProductList();
-  }, []);
+  }, [fetchProductList]);
 
   return (
     <div className="p-4 md:p-8 bg-gray-50 min-h-screen">

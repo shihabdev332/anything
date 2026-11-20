@@ -11,19 +11,30 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { useState, Fragment } from "react";
+import { useEffect, useState, Fragment } from "react";
 import Title from "./Title";
 import { IoMdClose } from "react-icons/io";
 import SocialLinks from "./SocialLinks";
 import { useSelector } from "react-redux";
+import { getAuthToken, getAuthUser } from "../auth/session";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const { products } = useSelector((state) => state.digital);
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [authSession, setAuthSession] = useState(() => ({
+    token: getAuthToken(),
+    user: getAuthUser(),
+  }));
+
+  useEffect(() => {
+    const refreshAuthSession = () => setAuthSession({ token: getAuthToken(), user: getAuthUser() });
+    window.addEventListener("auth-session-changed", refreshAuthSession);
+    return () => window.removeEventListener("auth-session-changed", refreshAuthSession);
+  }, []);
+
+  const { token, user } = authSession;
 
   return (
     <div className="border-b-[1px] border-slate-200 sticky top-0 z-50 bg-white/80 backdrop-blur-md">

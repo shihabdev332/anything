@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { createElement, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -54,7 +54,7 @@ const Home = ({ token, user }) => {
       <div className="grid gap-4 md:grid-cols-3">
         {cards.map(({ label, value, icon: Icon, path, color }) => (
           <Link key={label} to={path} className="rounded-2xl border border-zinc-100 p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-            <div className={`mb-5 flex h-11 w-11 items-center justify-center rounded-xl ${color}`}><Icon /></div>
+            <div className={`mb-5 flex h-11 w-11 items-center justify-center rounded-xl ${color}`}>{createElement(Icon)}</div>
             <p className="text-sm font-medium text-zinc-500">{label}</p>
             <p className="mt-1 text-3xl font-black text-zinc-900">{loading ? "…" : value}</p>
           </Link>

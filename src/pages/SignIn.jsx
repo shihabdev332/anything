@@ -8,6 +8,12 @@ import toast from "react-hot-toast";
 import { clearAuthSession, getAuthToken, setAuthSession } from "../auth/session";
 import Seo from "../component/Seo";
 
+const getWorkspacePath = (user) => {
+  if (user?.isOwner === true) return "/owner";
+  if (user?.isAdmin === true && user?.isDeliveryMan !== true) return "/profile?seller=overview";
+  return "/";
+};
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +32,7 @@ const SignIn = () => {
       }).then(({ data }) => {
         if (data?.success && data.user) {
           setAuthSession(token, data.user);
-          navigate(data.user.isOwner ? "/owner" : "/", { replace: true });
+          navigate(getWorkspacePath(data.user), { replace: true });
         }
       }).catch(() => {
         clearAuthSession();
@@ -73,8 +79,8 @@ const SignIn = () => {
             navigate("/", { replace: true });
           } else if (data.user?.isAdmin) {
             setAuthSession(data.token, data.user);
-            toast.success("Seller signed in. You can manage your store from Profile.");
-            navigate("/", { replace: true });
+            toast.success("Seller signed in.");
+            navigate("/profile?seller=overview", { replace: true });
           } else {
             setAuthSession(data.token, data.user);
             toast.success(data.message);
