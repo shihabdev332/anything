@@ -70,7 +70,7 @@ const useOwnerAnalytics = (token, range = "30d", month = toMonthInput(), customF
     setLoading(true);
     setError("");
     axios.get(`${serverUrl}/api/owner/analytics`, {
-      headers: { Authorization: `Bearer ${token}`, "Cache-Control": "no-cache" },
+      headers: { Authorization: `Bearer ${token}` },
       params: { range, month, ...(range === "custom" ? { from: customFrom, to: customTo } : {}) },
       signal: controller.signal,
       timeout: 15000,
@@ -237,20 +237,22 @@ const TrendChart = ({ data, title, money }) => {
   }
   const chartWidth = 760;
   const chartHeight = 230;
-  const left = 42;
-  const right = chartWidth - 16;
+  const left = 94;
+  const right = chartWidth - 20;
   const top = 18;
   const bottom = chartHeight - 36;
-  const maxValue = Math.max(1, ...data.map(({ value }) => value));
+  const maxValue = Math.max(0, ...data.map(({ value }) => Number(value) || 0));
+  const chartMax = maxValue || 1;
   const points = data.map(({ value }, index) => {
     const x = data.length === 1 ? (left + right) / 2 : left + ((right - left) * index) / (data.length - 1);
-    const y = bottom - (value / maxValue) * (bottom - top);
+    const y = bottom - ((Number(value) || 0) / chartMax) * (bottom - top);
     return { x, y, value };
   });
   const linePoints = points.map(({ x, y }) => `${x},${y}`).join(" ");
   const areaPoints = `${left},${bottom} ${linePoints} ${right},${bottom}`;
   const labelIndexes = [...new Set([0, Math.floor((data.length - 1) / 2), data.length - 1])];
   const seriesColor = money ? "#FB923C" : "#F9A8D4";
+  const axisLabels = [maxValue, maxValue / 2, 0];
 
   return (
     <div className="w-full overflow-hidden">
@@ -258,9 +260,12 @@ const TrendChart = ({ data, title, money }) => {
         <defs>
           <linearGradient id="owner-chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor={seriesColor} stopOpacity="0.28" /><stop offset="100%" stopColor={seriesColor} stopOpacity="0" /></linearGradient>
         </defs>
-        {[0, 1, 2, 3].map((step) => {
-          const y = top + ((bottom - top) * step) / 3;
-          return <line key={step} x1={left} y1={y} x2={right} y2={y} stroke="#FED7AA" strokeDasharray="3 6" strokeOpacity="0.9" />;
+        {axisLabels.map((value, index) => {
+          const y = top + ((bottom - top) * index) / (axisLabels.length - 1);
+          return <g key={index}>
+            <line x1={left} y1={y} x2={right} y2={y} stroke="#FED7AA" strokeDasharray="3 6" strokeOpacity="0.9" />
+            <text x={left - 10} y={y + 4} textAnchor="end" fill="#4B5563" fontSize="10">{money ? formatMoney(value) : formatCount(Math.round(value))}</text>
+          </g>;
         })}
         <polygon points={areaPoints} fill="url(#owner-chart-fill)" />
         <polyline points={linePoints} fill="none" stroke={seriesColor} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
@@ -292,7 +297,7 @@ const SmallBarList = ({ items, labelKey, valueKey, money = true, empty = "No rec
               <span className="shrink-0 font-semibold tabular-nums text-[#111827]">{money ? formatMoney(value) : formatCount(value)}</span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-[#FED7AA]/50">
-              <div className="h-full rounded-full bg-gradient-to-r from-[#FB923C] to-[#F9A8D4]" style={{ width: `${Math.max(value > 0 ? 2 : 0, (value / maximum) * 100)}%` }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-[#FB923C] to-[#F9A8D4]" style={{ width: `${(value / maximum) * 100}%` }} />
             </div>
           </div>
         );
@@ -302,14 +307,15 @@ const SmallBarList = ({ items, labelKey, valueKey, money = true, empty = "No rec
 };
 
 const CategoryPerformance = ({ categories = [], loading }) => {
-  const palette = ["#FB923C", "#F9A8D4", "#166534", "#F9A8D4", "#C2410C", "#38BDF8", "#A78BFA", "#4ADE80"];
+  const palette = ["#FB923C", "#EC4899", "#166534", "#0EA5E9", "#C2410C", "#8B5CF6", "#14B8A6", "#84CC16"];
+  const categoryColor = (index) => palette[index] || `hsl(${(index * 137.508) % 360} 70% 52%)`;
   const total = categories.reduce((sum, item) => sum + Number(item.currentSales || 0), 0);
   const stops = [];
   let cursor = 0;
   categories.forEach((item, index) => {
     const share = total ? (Number(item.currentSales || 0) / total) * 100 : 0;
     if (share <= 0) return;
-    stops.push(`${palette[index % palette.length]} ${cursor}% ${cursor + share}%`);
+    stops.push(`${categoryColor(index)} ${cursor}% ${cursor + share}%`);
     cursor += share;
   });
 
@@ -320,18 +326,18 @@ const CategoryPerformance = ({ categories = [], loading }) => {
     <div className="mt-5 grid gap-6 sm:grid-cols-[170px_minmax(0,1fr)] sm:items-center">
       <div className="relative mx-auto grid h-40 w-40 place-items-center rounded-full" style={{ background: stops.length ? `conic-gradient(${stops.join(", ")})` : "#FED7AA" }} role="img" aria-label={`${categories.length} product categories by order value`}>
         <div className="grid h-28 w-28 content-center justify-items-center rounded-full border border-[#FED7AA] bg-[#FFFFFF]">
-          <span className="text-[10px] text-[#4B5563]">Category sales</span>
+          <span className="text-[10px] text-[#4B5563]">Selected period sales</span>
           <strong className="mt-1 max-w-24 truncate text-sm text-[#111827]">{formatMoney(total)}</strong>
           <span className="mt-0.5 text-[10px] text-[#4B5563]">{categories.length} categories</span>
         </div>
       </div>
-      <div className="space-y-1">
+      <div className="max-h-[340px] space-y-1 overflow-y-auto pr-1">
         {categories.map((item, index) => {
           const sales = Number(item.currentSales || 0);
           const share = total ? (sales / total) * 100 : 0;
           const change = Number(item.previousSales || 0) > 0 ? ((sales - Number(item.previousSales)) / Number(item.previousSales)) * 100 : null;
           return <div key={item.category} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 rounded-xl px-3 py-2 transition hover:bg-[#FED7AA]/30">
-            <span className="flex min-w-0 items-center gap-2 text-xs font-medium text-[#111827]"><i className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[index % palette.length] }} /><span className="truncate">{item.category}</span><span className="text-[10px] font-normal text-[#4B5563]">{share.toFixed(0)}%</span></span>
+            <span className="flex min-w-0 items-center gap-2 text-xs font-medium text-[#111827]"><i className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: categoryColor(index) }} /><span className="truncate">{item.category}</span><span className="text-[10px] font-normal text-[#4B5563]">{share.toFixed(1)}%</span></span>
             <strong className="text-right text-xs tabular-nums text-[#111827]">{formatMoney(sales)}</strong>
             <span className="col-start-1 pl-[18px] text-[10px] text-[#4B5563]">{formatCount(item.units)} units · {formatCount(item.orders)} orders</span>
             <span className={`row-start-2 text-right text-[10px] font-semibold tabular-nums ${change === null ? "text-[#4B5563]" : change >= 0 ? "text-[#166534]" : "text-rose-700"}`}>{change === null ? "New" : `${change > 0 ? "+" : ""}${change.toFixed(1)}%`}</span>
@@ -423,7 +429,7 @@ const OwnerOverview = ({ user, token }) => {
   const cards = [
     { title: "Order value", value: kpis?.currentOrderValue, previous: kpis?.previousOrderValue, detail: `Compared with previous ${range}`, icon: CircleDollarSign, money: true, sparkline: (analytics?.series || []).map((point) => point.orderValue), tooltip: "Value of non-cancelled order lines. Orders use cash on delivery, so this is not collected payment revenue." },
     { title: "Orders", value: kpis?.currentOrders, previous: kpis?.previousOrders, detail: `Compared with previous ${range}`, icon: ClipboardList, sparkline: (analytics?.series || []).map((point) => point.orders), tooltip: "Order count includes cancellations for the selected period." },
-    { title: "Average order value", value: kpis?.currentAverageOrderValue, previous: kpis?.previousAverageOrderValue, detail: "Non-cancelled orders only", icon: ShoppingBag, money: true, tooltip: "Non-cancelled order-line value divided by non-cancelled order count." },
+    { title: "Average order value", value: kpis?.currentAverageOrderValue, previous: kpis?.previousAverageOrderValue, detail: "Complete, priced orders only", icon: ShoppingBag, money: true, tooltip: "Non-cancelled order-line value divided by non-cancelled orders with a stored price for every active item." },
     { title: "Completed orders", value: kpis?.currentCompletedOrders, previous: kpis?.previousCompletedOrders, detail: "Status: Delivered", icon: CheckCircle2, tooltip: "Orders marked Delivered in the order records." },
     { title: "All-time order value", value: kpis?.totalOrderValue, detail: "Non-cancelled line items · COD", icon: CircleDollarSign, money: true, tooltip: "Booked order value, not confirmed collected revenue." },
     { title: "All-time orders", value: kpis?.totalOrders, detail: `${formatCount(kpis?.cancelledOrders)} cancelled`, icon: ClipboardList, tooltip: "All order records in the database." },
@@ -626,7 +632,7 @@ const OwnerOverview = ({ user, token }) => {
               {analytics.customerHistory.slice(-12).map((month) => {
                 const visible = analytics.customerHistory.slice(-12);
                 const max = Math.max(1, ...visible.map((item) => Number(item.customers || 0)));
-                const height = Math.max(Number(month.customers) > 0 ? 6 : 2, (Number(month.customers || 0) / max) * 100);
+                const height = (Number(month.customers || 0) / max) * 100;
                 return <div key={month.month} className="group relative flex h-full min-w-0 flex-col justify-end" title={`${month.month}: ${formatCount(month.customers)} recorded sign-ups`}><div className="rounded-t-md bg-[#F9A8D4] opacity-75 transition group-hover:opacity-100" style={{ height: `${height}%` }} /><span className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] text-[#4B5563]">{month.month.slice(5)}</span></div>;
               })}
             </div>
@@ -642,7 +648,7 @@ const OwnerOverview = ({ user, token }) => {
               {(analytics?.monthlyHistory || []).slice(-12).map((month) => {
                 const values = analytics.monthlyHistory.slice(-12).map((item) => Number(item.orderValue || 0));
                 const max = Math.max(1, ...values);
-                const height = Math.max(Number(month.orderValue) > 0 ? 6 : 2, (Number(month.orderValue || 0) / max) * 100);
+                const height = (Number(month.orderValue || 0) / max) * 100;
                 return <div key={month.month} className="group relative flex h-full min-w-0 flex-col justify-end" title={`${month.month}: ${formatMoney(month.orderValue)} · ${formatCount(month.orders)} orders`}><div className="rounded-t-md bg-gradient-to-t from-[#FB923C] to-[#F9A8D4] opacity-80 transition group-hover:opacity-100" style={{ height: `${height}%` }} /><span className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] text-[#4B5563]">{month.month.slice(5)}</span></div>;
               })}
               {!analytics?.monthlyHistory?.length && <p className="col-span-12 self-center text-center text-xs text-[#4B5563]">No order history for this period.</p>}
@@ -744,7 +750,7 @@ const OwnerReports = ({ token }) => {
             {[
               { title: "Order value", value: report.orderValue, detail: "Non-cancelled items · COD", icon: CircleDollarSign, money: true },
               { title: "Orders", value: report.orders, detail: `${formatCount(report.completedOrders)} delivered`, icon: ClipboardList },
-              { title: "Average order value", value: report.averageOrderValue, detail: "Non-cancelled orders", icon: ShoppingBag, money: true },
+              { title: "Average order value", value: report.averageOrderValue, detail: "Complete, priced orders only", icon: ShoppingBag, money: true },
               { title: "Cancelled orders", value: report.cancelledOrders, detail: "Parent order status", icon: PackageX },
               ].map((card) => <article key={card.title} title={card.detail} className={`${panelClass} p-4 sm:p-5`}><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#DCFCE7] text-[#166534]"><card.icon size={17} /></span><p className="mt-4 text-xs font-medium text-[#4B5563]">{card.title}</p><p className="mt-1 text-2xl font-bold text-[#111827]">{card.money ? formatMoney(card.value) : formatCount(card.value)}</p><p className="mt-1 text-[10px] text-[#4B5563]">{card.detail}</p></article>)}
           </section>
@@ -766,7 +772,7 @@ const OwnerReports = ({ token }) => {
               {history.slice(-12).map((item) => {
                 const visible = history.slice(-12);
                 const max = Math.max(1, ...visible.map((row) => Number(row.orderValue || 0)));
-                const height = Math.max(Number(item.orderValue) > 0 ? 6 : 2, (Number(item.orderValue || 0) / max) * 100);
+                const height = (Number(item.orderValue || 0) / max) * 100;
                 return <div key={item.month} className="group relative flex h-full min-w-0 flex-col justify-end" title={`${item.month}: ${formatMoney(item.orderValue)} · ${formatCount(item.orders)} orders`}><div className={`rounded-t-md transition ${item.month === month ? "bg-gradient-to-t from-[#FB923C] to-[#F9A8D4]" : "bg-[#FDBA74]/70 group-hover:bg-[#FB923C]"}`} style={{ height: `${height}%` }} /><span className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] text-[#4B5563]">{item.month.slice(5)}</span></div>;
               })}
               {!history.length && <p className="col-span-12 self-center text-center text-xs text-[#4B5563]">No order history for these months.</p>}
@@ -776,7 +782,7 @@ const OwnerReports = ({ token }) => {
           <div className="grid gap-4 xl:grid-cols-2">
             <section className={`${panelClass} p-5`}>
               <SectionHeading eyebrow="Breakdown" title="Category order value" detail="Selected month compared with its previous month." />
-              <div className="mt-5"><SmallBarList items={categories} labelKey="category" valueKey="currentSales" /></div>
+              <div className="mt-5 max-h-[340px] overflow-y-auto pr-1"><SmallBarList items={categories} labelKey="category" valueKey="currentSales" /></div>
               {categories.length > 0 && <div className="mt-4 border-t border-[#FED7AA]/70 pt-3 text-[10px] text-[#4B5563]">Previous month values: {categories.map((item) => `${item.category} ${formatMoney(item.previousSales)}`).join(" · ")}</div>}
             </section>
             <section className={`${panelClass} p-5`}>
