@@ -676,6 +676,7 @@ const OwnerReports = ({ token }) => {
   const history = analytics?.monthlyHistory || [];
   const categories = report?.categories || [];
   const products = report?.products || [];
+  const isCurrentReportMonth = month === toMonthInput();
   const yearAgoKey = `${month.slice(0, 4) - 1}${month.slice(4)}`;
   const yearAgo = history.find((item) => item.month === yearAgoKey);
   const bestMonth = history.length ? history.reduce((best, item) => Number(item.orderValue) > Number(best.orderValue) ? item : best, history[0]) : null;
@@ -749,7 +750,7 @@ const OwnerReports = ({ token }) => {
           </section>
 
           <section className={`${panelClass} p-5 sm:p-6`}>
-            <SectionHeading eyebrow={month} title="Month-over-month comparison" detail="Selected month compared with the month immediately before it." />
+            <SectionHeading eyebrow={month} title="Month-over-month comparison" detail={isCurrentReportMonth ? "Month-to-date compared with the same elapsed period last month." : "Selected month compared with the month immediately before it."} />
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               <div className="rounded-xl bg-[#FFFFFF] p-4 print:bg-white"><p className="text-[10px] uppercase tracking-wider text-[#4B5563]">Selected month</p><p className="mt-2 text-xl font-bold text-[#111827]">{formatMoney(report.orderValue)}</p></div>
               <div className="rounded-xl bg-[#FFFFFF] p-4 print:bg-white"><p className="text-[10px] uppercase tracking-wider text-[#4B5563]">Previous month</p><p className="mt-2 text-xl font-bold text-[#111827]">{formatMoney(report.previousOrderValue)}</p></div>
